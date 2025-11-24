@@ -34,6 +34,21 @@ const app = express();
 const apiRouter = express.Router();
 const FILE_LIMIT = "3GB";
 
+const apiHits = new Set();
+
+app.use((req, res, next) => {
+  const endpoint = `${req.method} ${req.originalUrl.split("?")[0]}`;
+  apiHits.add(endpoint);
+  console.log(`[API] ${endpoint}`);
+  next();
+});
+
+process.on("SIGINT", () => {
+  console.log("\n=== UNIQUE API ENDPOINTS USED ===");
+  console.log([...apiHits].sort().join("\n"));
+  process.exit();
+});
+
 // Only log HTTP requests in development mode and if the ENABLE_HTTP_LOGGER environment variable is set to true
 if (
   process.env.NODE_ENV === "development" &&
