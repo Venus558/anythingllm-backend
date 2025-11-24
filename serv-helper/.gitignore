@@ -1,0 +1,56 @@
+# ---- Python ----
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pdb
+*.egg-info/
+*.egg
+.env
+.venv/
+venv/
+env/
+*/.env
+
+# ---- Environment & Secrets ----
+.env
+*.env
+env.local
+secrets/
+secret.key
+jwt.key
+*.pem
+*.crt
+
+# ---- OS Files ----
+.DS_Store
+Thumbs.db
+
+# ---- Logs ----
+*.log
+logs/
+*.out
+*.err
+
+# ---- Bytecode ----
+__pycache__/
+*.pyc
+
+# ---- IDE Folders ----
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ---- Uvicorn Reload Cache ----
+.reload/
+
+# ---- Build/Dist ----
+build/
+dist/
+*.egg-info/
+
+# ---- Database (optional if using SQLite) ----
+automation.db
+*.sqlite
+*.sqlite3
