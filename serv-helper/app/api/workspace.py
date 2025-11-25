@@ -45,7 +45,7 @@ def create_workspace(data:dict):
         }
     
     
-    ws_id = resp.json()['workspace']['id']
+    ws_id = resp.json()['workspace']['slug']
 
     prompt_data = {
         'workspace_id': ws_id,
@@ -71,7 +71,7 @@ def set_prompt(data:dict):
     
     token = get_token()
 
-    url = f'{ANYTHING_URL}/admin/workspaces/{workspace_id}/chat-settings'
+    url = f'{ANYTHING_URL}/workspace/{workspace_id}/update'
 
     headers = {
         'Authorization': f'Bearer {token}',
@@ -79,12 +79,12 @@ def set_prompt(data:dict):
     }
 
     payload = {
-        "chatProvider": "xai",
-        "chatModel": "grok-4-1-fast-non-reasoning",
+        "chatProvider": "default",
         "chatMode": "chat",
         "openAiPrompt": prompt,
         "openAiHistory": 20,
-        "openAiTemp": 0.7
+        "openAiTemp": 0.7,
+        'queryRefusalResponse': 'N/A'
         }
 
     resp = requests.post(url, json=payload, headers=headers)
