@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from app.api.auth import get_token
 import requests, os
 import re
+from .assign_ws import assign_user
 
 router = APIRouter(prefix='/workspace', tags=['workspace'])
 
@@ -25,6 +26,8 @@ def create_workspace(data:dict):
 
     workspace_name = workspace_name_from_email(email)
 
+    email = email.lower()
+
     token=get_token()
 
     headers = {
@@ -45,14 +48,25 @@ def create_workspace(data:dict):
         }
     
     
-    ws_id = resp.json()['workspace']['slug']
+    ws_slug = resp.json()['workspace']['slug']
+    ws_id = resp.json()['workspace']['id']
+    user_id = data.get('user_id')
 
     prompt_data = {
-        'workspace_id': ws_id,
+        'workspace_slug': ws_slug,
         'prompt': 'Respond Like Beavis and Butthead. You can use emojis and respond quickly!'
     }
 
+    assign_data = {
+        'user_id' : user_id,
+        'ws_id' : ws_id
+    }
+
     set_prompt(prompt_data)
+
+    assign_user(assign_data)
+
+    
 
     return {
         'status': 'ok',
@@ -63,15 +77,15 @@ def create_workspace(data:dict):
 
 @router.post('/prompt/set')
 def set_prompt(data:dict):
-    workspace_id = data.get('workspace_id')
+    workspace_slug = data.get('workspace_slug')
     prompt = data.get('prompt')
 
-    if not workspace_id or not prompt:
-        return {'error': 'workspace_id and prompt are required'}
+    if not workspace_slug or not prompt:
+        return {'error': 'workspace_slug and prompt are required'}
     
     token = get_token()
 
-    url = f'{ANYTHING_URL}/workspace/{workspace_id}/update'
+    url = f'{ANYTHING_URL}/workspace/{workspace_slug}/update'
 
     headers = {
         'Authorization': f'Bearer {token}',
@@ -92,4 +106,4 @@ def set_prompt(data:dict):
     if resp.status_code != 200:
         return {'status': 'error', 'detail': resp.text}
     
-    return {'status': 'ok', 'workspace_id': workspace_id}
+    return {'status': 'ok', 'workspace_slug': workspace_slug}
