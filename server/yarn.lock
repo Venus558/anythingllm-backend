@@ -2030,7 +2030,7 @@
   "resolved" "https://registry.npmjs.org/@pkgr/core/-/core-0.1.1.tgz"
   "version" "0.1.1"
 
-"@prisma/client@5.3.1":
+"@prisma/client@^5.3.1":
   "integrity" "sha512-ArOKjHwdFZIe1cGU56oIfy7wRuTn0FfZjGuU/AjgEBOQh+4rDkB6nF+AGHP8KaVpkBIiHGPQh3IpwQ3xDMdO0Q=="
   "resolved" "https://registry.npmjs.org/@prisma/client/-/client-5.3.1.tgz"
   "version" "5.3.1"
@@ -7104,7 +7104,7 @@
   "resolved" "https://registry.npmjs.org/prettier/-/prettier-3.2.5.tgz"
   "version" "3.2.5"
 
-"prisma@*", "prisma@5.3.1":
+"prisma@*", "prisma@^5.3.1":
   "integrity" "sha512-Wp2msQIlMPHe+5k5Od6xnsI/WNG7UJGgFUJgqv/ygc7kOECZapcSz/iU4NIEzISs3H1W9sFLjAPbg/gOqqtB7A=="
   "resolved" "https://registry.npmjs.org/prisma/-/prisma-5.3.1.tgz"
   "version" "5.3.1"

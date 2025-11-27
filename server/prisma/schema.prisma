@@ -6,14 +6,18 @@ generator client {
 // Make sure to set the correct DATABASE_URL in your .env file
 // After swapping run `yarn prisma:setup` from the root directory to migrate the database
 //
-// datasource db {
-//   provider = "postgresql"
-//   url      = env("DATABASE_URL")
-// }
+// prisma/schema.prisma
 datasource db {
-  provider = "sqlite"
-  url      = "file:../storage/anythingllm.db"
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  // uncomment next line if you use Prisma <5.10
+  directUrl = env("DATABASE_URL_UNPOOLED")
 }
+
+// datasource db {
+//   provider = "sqlite"
+//   url      = "file:../storage/anythingllm.db"
+// }
 
 model api_keys {
   id            Int      @id @default(autoincrement())
@@ -151,6 +155,7 @@ model workspaces {
   workspace_agent_invocations  workspace_agent_invocations[]
   prompt_history               prompt_history[]
   workspace_parsed_files       workspace_parsed_files[]
+  memory                       workspace_memory?
 }
 
 model workspace_threads {
@@ -390,4 +395,15 @@ model workspace_parsed_files {
 
   @@index([workspaceId])
   @@index([userId])
+}
+
+model workspace_memory {
+  id           Int      @id @default(autoincrement())
+  workspace_id Int       @unique
+  memory_json  Json     @db.JsonB
+  created_at   DateTime @default(now()) @db.Timestamptz
+  updated_at   DateTime @default(now()) @db.Timestamptz
+
+  // Relation to the workspaces table
+  workspace  workspaces @relation(fields: [workspace_id], references: [id], onDelete: Cascade)
 }

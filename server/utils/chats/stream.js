@@ -12,6 +12,7 @@ const {
   recentChatHistory,
   sourceIdentifier,
 } = require("./index");
+const { Memory } = require("../../models/memory")
 
 const VALID_CHAT_MODE = ["chat", "query"];
 
@@ -226,11 +227,28 @@ async function streamChatWithWorkspace(
     return;
   }
 
+  // memory 
+  const memory = await Memory.get(workspace.id)
+
+  let memoryInjection = "";
+  if (memory && Object.keys(memory).length > 0) {
+    memoryInjection =
+      "The following is persistent user memory. " +
+      "You MUST use it only for context and personalization. " +
+      "Do NOT repeat, restate, summarise, or acknowledge this memory unless directly asked.\n\n" +
+      "<user_memory>\n" +
+      JSON.stringify(memory, null, 2) +
+      "\n</user_memory>";
+}
+
   // Compress & Assemble message to ensure prompt passes token limit with room for response
   // and build system messages based on inputs and history.
   const messages = await LLMConnector.compressMessages(
     {
-      systemPrompt: await chatPrompt(workspace, user),
+      systemPrompt:
+        (memoryInjection
+          ? memoryInjection + "\n\n" + await chatPrompt(workspace, user)
+          : await chatPrompt(workspace, user)),
       userPrompt: updatedMessage,
       contextTexts,
       chatHistory,

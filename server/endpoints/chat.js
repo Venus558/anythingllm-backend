@@ -17,6 +17,8 @@ const { WorkspaceThread } = require("../models/workspaceThread");
 const { User } = require("../models/user");
 const truncate = require("truncate");
 const { getModelTag } = require("./utils");
+const { extractAndUpdateMemory } = require("../models/extractMemory");
+
 
 function chatEndpoints(app) {
   if (!app) return;
@@ -59,6 +61,16 @@ function chatEndpoints(app) {
           });
           return;
         }
+
+        // --- AUTO MEMORY EXTRACTION ---
+        try {
+          await extractAndUpdateMemory(workspace.id, [
+            { role: "user", content: message }
+          ]);
+        } catch (err) {
+          console.error("[Memory Extraction ERROR]", err);
+        }
+        // --- END MEMORY EXTRACTION ---
 
         await streamChatWithWorkspace(
           response,
@@ -147,6 +159,16 @@ function chatEndpoints(app) {
           return;
         }
 
+        // --- AUTO MEMORY EXTRACTION ---
+        try {
+          await extractAndUpdateMemory(workspace.id, [
+            { role: "user", content: message }
+          ]);
+        } catch (err) {
+          console.error("[Memory Extraction ERROR]", err);
+        }
+        // --- END MEMORY EXTRACTION ---
+
         await streamChatWithWorkspace(
           response,
           workspace,
@@ -156,6 +178,10 @@ function chatEndpoints(app) {
           thread,
           attachments
         );
+
+
+
+        
 
         // If thread was renamed emit event to frontend via special `action` response.
         await WorkspaceThread.autoRenameThread({

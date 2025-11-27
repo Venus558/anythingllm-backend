@@ -30,9 +30,13 @@ const { agentFlowEndpoints } = require("./endpoints/agentFlows");
 const { mcpServersEndpoints } = require("./endpoints/mcpServers");
 const { mobileEndpoints } = require("./endpoints/mobile");
 const { httpLogger } = require("./middleware/httpLogger");
+
 const app = express();
 const apiRouter = express.Router();
 const FILE_LIMIT = "3GB";
+
+const debugMemoryEndpoints = require("./endpoints/debugMemory");
+
 
 const apiHits = new Set();
 
@@ -81,6 +85,9 @@ systemEndpoints(apiRouter);
 extensionEndpoints(apiRouter);
 workspaceEndpoints(apiRouter);
 workspaceThreadEndpoints(apiRouter);
+
+debugMemoryEndpoints(apiRouter);
+
 chatEndpoints(apiRouter);
 adminEndpoints(apiRouter);
 inviteEndpoints(apiRouter);
